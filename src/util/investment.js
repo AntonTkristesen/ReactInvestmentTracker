@@ -1,27 +1,52 @@
 // This function expects a JS object as an argument
 // The object should contain the following properties
 // - initialInvestment: The initial investment amount
-// - annualInvestment: The amount invested every year
+// - monthlyInvestment: The amount invested every month
 // - expectedReturn: The expected (annual) rate of return
-// - duration: The investment duration (time frame)
+// - duration: The investment duration (time frame in years)
 export function calculateInvestmentResults({
   initialInvestment,
-  annualInvestment,
+  monthlyInvestment,
   expectedReturn,
   duration,
 }) {
   const annualData = [];
   let investmentValue = initialInvestment;
+  const monthlyRate = expectedReturn / 100 / 12; // Monthly interest rate
+  const totalMonths = duration * 12; // Total number of months
 
-  for (let i = 0; i < duration; i++) {
-    const interestEarnedInYear = investmentValue * (expectedReturn / 100);
-    investmentValue += interestEarnedInYear + annualInvestment;
-    annualData.push({
-      year: i + 1, // year identifier
-      interest: interestEarnedInYear, // the amount of interest earned in this year
-      valueEndOfYear: investmentValue, // investment value at end of year
-      annualInvestment: annualInvestment, // investment added in this year
-    });
+  let totalInterestEarnedInYear = 0;
+  let totalMonthlyInvestmentsInYear = 0;
+  let cumulativeInvested = initialInvestment; // Track total amount invested (initial + all monthly contributions)
+
+  for (let month = 1; month <= totalMonths; month++) {
+    // Apply compound interest on the current balance
+    const monthlyInterest = investmentValue * monthlyRate;
+    investmentValue += monthlyInterest;
+    
+    // Add monthly contribution after interest is applied
+    investmentValue += monthlyInvestment;
+    cumulativeInvested += monthlyInvestment;
+    
+    // Track yearly totals
+    totalInterestEarnedInYear += monthlyInterest;
+    totalMonthlyInvestmentsInYear += monthlyInvestment;
+
+    // At the end of each year, record the data
+    if (month % 12 === 0) {
+      const year = month / 12;
+      annualData.push({
+        year: year, // year identifier
+        interest: totalInterestEarnedInYear, // the amount of interest earned in this year
+        valueEndOfYear: investmentValue, // investment value at end of year
+        monthlyInvestment: totalMonthlyInvestmentsInYear, // total monthly investments added in this year
+        totalInvested: cumulativeInvested, // cumulative total amount invested (initial + all monthly contributions)
+      });
+      
+      // Reset yearly counters for next year
+      totalInterestEarnedInYear = 0;
+      totalMonthlyInvestmentsInYear = 0;
+    }
   }
 
   return annualData;

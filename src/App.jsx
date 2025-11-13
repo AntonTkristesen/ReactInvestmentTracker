@@ -6,26 +6,41 @@ import { useState } from "react"
 function App() {
   const [formData, setFormData] = useState({
     initialInvestment: "",
-    annualInvestment: "",
-    expectedReturn: "",
+    monthlyInvestment: "",
+    expectedReturn: "8",
     duration: "",
+    targetAmount: "",
   });
 
   const [currency, setCurrency] = useState('DKK');
+  const [showDetails, setShowDetails] = useState(false);
 
   const handleFieldChange = (name, value) => {
     const updated = { ...formData, [name]: value };
     setFormData(updated);
   };
 
+  const handleReturnChange = (value) => {
+    handleFieldChange('expectedReturn', value);
+  };
+
   return (
-    <div>
+    <div className="app-container">
       <Header />
-      <CalaculationBox 
-        formData={formData}
-        onFieldChange={handleFieldChange}
-      />
-      <CalaculationResults data={formData} currency={currency} />
+      <div className="main-content">
+        <CalaculationBox 
+          formData={formData}
+          onFieldChange={handleFieldChange}
+        />
+        <CalaculationResults 
+          data={formData} 
+          currency={currency}
+          onReturnChange={handleReturnChange}
+          onFieldChange={handleFieldChange}
+          showDetails={showDetails}
+          onToggleDetails={() => setShowDetails(!showDetails)}
+        />
+      </div>
     </div>
   )
 }

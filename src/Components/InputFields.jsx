@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
-export default function InputField({ header, name, value, onChange}) {
+export default function InputField({ header, name, value, onChange, suffix }) {
     return (
-        <div>
+        <div className="input-field">
           <label>{header}</label>
-          <input
-            name={name}
-            type="number"
-            value={value}
-            onChange={(e) => onChange(name, Number(e.target.value))}
-          />
+          <div className="input-wrapper">
+            <input
+              name={name}
+              type="number"
+              value={value || ""}
+              onChange={(e) => onChange(name, e.target.value)}
+              placeholder="0"
+            />
+            {suffix && <span className="input-suffix">{suffix}</span>}
+          </div>
         </div>
       );
 }
