@@ -49,7 +49,7 @@ export default function SplashScreen({ onComplete }) {
       clearTimeout(typingTimer);
       if (typingInterval) clearInterval(typingInterval);
     };
-  }, [onComplete, fullText]);
+  }, [onComplete]);
 
   if (!show) return null;
 

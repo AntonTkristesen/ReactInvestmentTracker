@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { calculateInvestmentResults } from '../util/investment';
+import { MONTHS_PER_YEAR } from '../constants/investment';
 
 export function useInvestmentCalculations(data) {
   const { initialInvestment, monthlyInvestment, expectedReturn, duration, targetAmount } = data;
@@ -52,10 +53,10 @@ export function useInvestmentCalculations(data) {
     const profit = finalValue - totalInvested;
     const roiPercentage = totalInvested > 0 ? ((profit / totalInvested) * 100).toFixed(1) : 0;
     
-    const totalContributions = parseFloat(initialInvestment) + (parseFloat(monthlyInvestment) * 12 * parseInt(duration));
+    const totalContributions = parseFloat(initialInvestment) + (parseFloat(monthlyInvestment) * MONTHS_PER_YEAR * parseInt(duration));
     const totalInterest = results.reduce((sum, year) => sum + year.interest, 0);
     
-    const avgMonthlyGrowth = (finalValue - parseFloat(initialInvestment)) / (parseInt(duration) * 12);
+    const avgMonthlyGrowth = (finalValue - parseFloat(initialInvestment)) / (parseInt(duration) * MONTHS_PER_YEAR);
     const contributionPercentage = finalValue > 0 ? ((totalContributions / finalValue) * 100).toFixed(1) : 0;
     const interestPercentage = finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(1) : 0;
     const avgAnnualGrowth = parseInt(duration) > 0
@@ -70,16 +71,17 @@ export function useInvestmentCalculations(data) {
     const yearsToGoal = targetAmount && !targetReached && parseFloat(targetAmount) > finalValue
       ? (() => {
           let currentValue = finalValue;
-          const monthlyRate = parseFloat(expectedReturn) / 100 / 12;
+          const monthlyRate = parseFloat(expectedReturn) / 100 / MONTHS_PER_YEAR;
           const target = parseFloat(targetAmount);
           const monthlyContrib = parseFloat(monthlyInvestment);
           let months = 0;
-          while (currentValue < target && months < 1000) {
+          const MAX_MONTHS = 1000;
+          while (currentValue < target && months < MAX_MONTHS) {
             currentValue += currentValue * monthlyRate;
             currentValue += monthlyContrib;
             months++;
           }
-          return months > 0 ? (months / 12).toFixed(1) : null;
+          return months > 0 ? (months / MONTHS_PER_YEAR).toFixed(1) : null;
         })()
       : null;
     
@@ -111,4 +113,5 @@ export function useInvestmentCalculations(data) {
     ...calculations,
   };
 }
+
 

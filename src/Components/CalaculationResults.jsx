@@ -8,15 +8,16 @@ import GrowthCard from './GrowthCard';
 import InvestmentChart from './InvestmentChart';
 import ActionsContainer from './ActionsContainer';
 import DetailsTable from './DetailsTable';
+import AIInsights from './AIInsights';
+import AIChat from './AIChat';
 
 export default function CalaculationResults ({
   data, 
-  currency = 'DKK', 
   onReturnChange, 
   showDetails, 
   onToggleDetails
 }) {
-  const formatter = createFormatter(currency);
+  const formatter = createFormatter('DKK');
   const {
     results,
     finalValue,
@@ -83,14 +84,25 @@ export default function CalaculationResults ({
               formatter={formatter}
             />
           </div>
-        </>
-      )}
 
-      {results.length > 0 && (
-        <>
           <InvestmentChart
             chartData={chartData}
             formatter={formatter}
+          />
+
+          <AIInsights
+            investmentData={data}
+            results={results}
+          />
+
+          <AIChat
+            investmentContext={{
+              profit,
+              finalValue,
+              yearsToGoal,
+              roiPercentage,
+              targetAmount: data.targetAmount,
+            }}
           />
 
           <ActionsContainer

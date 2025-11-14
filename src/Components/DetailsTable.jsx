@@ -34,3 +34,4 @@ export default function DetailsTable({ results, initialInvestment, formatter }) 
   );
 }
 
+

@@ -19,16 +19,17 @@ export default function ActionsContainer({
           onClick={() => exportToPDF(data, results, formatter)} 
           className="export-button export-pdf"
         >
-          📄 Eksporter som PDF
+          Eksporter som PDF
         </button>
         <button 
           onClick={() => exportToCSV(data, results, formatter)} 
           className="export-button export-csv"
         >
-          📊 Eksporter som CSV
+          Eksporter som CSV
         </button>
       </div>
     </div>
   );
 }
+
 

@@ -1,15 +1,16 @@
 import jsPDF from 'jspdf';
+import { calculateSummaryMetrics } from './calculations';
 
 export function exportToPDF(data, results, formatter) {
   const { initialInvestment, monthlyInvestment, expectedReturn, duration, targetAmount } = data;
-  const finalValue = results.length > 0 ? results[results.length - 1].valueEndOfYear : 0;
-  const totalInvested = results.length > 0 ? results[results.length - 1].totalInvested : 0;
-  const profit = finalValue - totalInvested;
-  const roiPercentage = totalInvested > 0 ? ((profit / totalInvested) * 100).toFixed(1) : 0;
-  const totalContributions = results.length > 0 
-    ? parseFloat(initialInvestment) + (parseFloat(monthlyInvestment) * 12 * parseInt(duration))
-    : 0;
-  const totalInterest = results.reduce((sum, year) => sum + year.interest, 0);
+  const {
+    finalValue,
+    totalInvested,
+    profit,
+    roiPercentage,
+    totalContributions,
+    totalInterest,
+  } = calculateSummaryMetrics(data, results);
 
   const doc = new jsPDF();
   
@@ -137,14 +138,14 @@ export function exportToPDF(data, results, formatter) {
 
 export function exportToCSV(data, results, formatter) {
   const { initialInvestment, monthlyInvestment, expectedReturn, duration, targetAmount } = data;
-  const finalValue = results.length > 0 ? results[results.length - 1].valueEndOfYear : 0;
-  const totalInvested = results.length > 0 ? results[results.length - 1].totalInvested : 0;
-  const profit = finalValue - totalInvested;
-  const roiPercentage = totalInvested > 0 ? ((profit / totalInvested) * 100).toFixed(1) : 0;
-  const totalContributions = results.length > 0 
-    ? parseFloat(initialInvestment) + (parseFloat(monthlyInvestment) * 12 * parseInt(duration))
-    : 0;
-  const totalInterest = results.reduce((sum, year) => sum + year.interest, 0);
+  const {
+    finalValue,
+    totalInvested,
+    profit,
+    roiPercentage,
+    totalContributions,
+    totalInterest,
+  } = calculateSummaryMetrics(data, results);
 
   let csv = 'Investeringsberegning\n';
   csv += `Genereret: ${new Date().toLocaleDateString('da-DK')}\n\n`;
@@ -177,13 +178,6 @@ export function exportToCSV(data, results, formatter) {
     const startValue = index === 0 
       ? parseFloat(initialInvestment)
       : results[index - 1].valueEndOfYear;
-    
-    // Remove currency symbols and format for CSV
-    const formatForCSV = (value) => {
-      const formatted = formatter.format(value);
-      // Remove currency symbols and keep just the number
-      return formatted.replace(/[^\d,.-]/g, '').replace(',', '.');
-    };
     
     csv += `${yearData.year},"${formatter.format(startValue)}","${formatter.format(yearData.monthlyInvestment)}","${formatter.format(yearData.interest)}","${formatter.format(yearData.valueEndOfYear)}","${formatter.format(yearData.totalInvested)}"\n`;
   });

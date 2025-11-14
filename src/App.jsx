@@ -14,7 +14,6 @@ function App() {
     targetAmount: "",
   });
 
-  const [currency, setCurrency] = useState('DKK');
   const [showDetails, setShowDetails] = useState(false);
 
   const handleFieldChange = (name, value) => {
@@ -48,9 +47,7 @@ function App() {
               />
               <CalaculationResults 
                 data={formData} 
-                currency={currency}
                 onReturnChange={handleReturnChange}
-                onFieldChange={handleFieldChange}
                 showDetails={showDetails}
                 onToggleDetails={() => setShowDetails(!showDetails)}
               />

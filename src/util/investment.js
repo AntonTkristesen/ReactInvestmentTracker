@@ -1,9 +1,14 @@
-// This function expects a JS object as an argument
-// The object should contain the following properties
-// - initialInvestment: The initial investment amount
-// - monthlyInvestment: The amount invested every month
-// - expectedReturn: The expected (annual) rate of return
-// - duration: The investment duration (time frame in years)
+import { MONTHS_PER_YEAR, PERCENTAGE_DIVISOR } from '../constants/investment';
+
+/**
+ * Calculate investment results with compound interest
+ * @param {Object} params - Investment parameters
+ * @param {number} params.initialInvestment - Initial investment amount
+ * @param {number} params.monthlyInvestment - Monthly investment amount
+ * @param {number} params.expectedReturn - Expected annual return percentage
+ * @param {number} params.duration - Investment duration in years
+ * @returns {Array} Annual investment data
+ */
 export function calculateInvestmentResults({
   initialInvestment,
   monthlyInvestment,
@@ -12,8 +17,8 @@ export function calculateInvestmentResults({
 }) {
   const annualData = [];
   let investmentValue = initialInvestment;
-  const monthlyRate = expectedReturn / 100 / 12; // Monthly interest rate
-  const totalMonths = duration * 12; // Total number of months
+  const monthlyRate = expectedReturn / PERCENTAGE_DIVISOR / MONTHS_PER_YEAR;
+  const totalMonths = duration * MONTHS_PER_YEAR;
 
   let totalInterestEarnedInYear = 0;
   let totalMonthlyInvestmentsInYear = 0;
@@ -33,8 +38,8 @@ export function calculateInvestmentResults({
     totalMonthlyInvestmentsInYear += monthlyInvestment;
 
     // At the end of each year, record the data
-    if (month % 12 === 0) {
-      const year = month / 12;
+    if (month % MONTHS_PER_YEAR === 0) {
+      const year = month / MONTHS_PER_YEAR;
       annualData.push({
         year: year, // year identifier
         interest: totalInterestEarnedInYear, // the amount of interest earned in this year
@@ -51,16 +56,6 @@ export function calculateInvestmentResults({
 
   return annualData;
 }
-
-// The browser-provided Intl API is used to prepare a formatter object
-// This object offers a "format()" method that can be used to format numbers as currency
-// Example Usage: formatter.format(1000) => yields "$1,000"
-export const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
 
 // Create a formatter function that accepts a currency code
 export function createFormatter(currency = 'USD') {

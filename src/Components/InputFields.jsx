@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function InputField({ header, name, value, onChange, suffix }) {
     return (
         <div className="input-field">

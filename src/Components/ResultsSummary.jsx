@@ -27,7 +27,7 @@ export default function ResultsSummary({
             {formatter.format(parseFloat(targetAmount))}
           </div>
           {targetReached ? (
-            <div className="result-subtext success">✓ Målet er nået!</div>
+            <div className="result-subtext success">Målet er nået!</div>
           ) : yearsToGoal ? (
             <div className="result-subtext">Estimeret tid til mål: {yearsToGoal} år</div>
           ) : null}
@@ -48,4 +48,5 @@ export default function ResultsSummary({
     </div>
   );
 }
+
 
